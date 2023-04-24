@@ -1,0 +1,88 @@
+--[영화 예매 키오스크]
+-- 영화
+CREATE TABLE movie(
+    movieNum    VARCHAR2(30)    PRIMARY KEY,    -- 영화코드
+    movieName   VARCHAR2(100)   NOT NULL,       -- 영화제목
+    director    VARCHAR2(30),                   -- 감독
+    openDate    DATE            NOT NULL,       -- 개봉일자
+    closeDate   DATE            NOT NULL,       -- 종영일자
+    genre       VARCHAR2(30)                    -- 장르명
+);
+
+
+-- 상영관
+CREATE TABLE theater(
+    therNum VARCHAR2(30)    PRIMARY KEY,      -- 상영관번호
+    totSeat NUMBER(5)       NOT NULL          -- 총좌석
+);
+
+
+-- 상영스케줄
+CREATE TABLE schedule(
+    onNum        VARCHAR2(30)    PRIMARY KEY,   --상영코드
+    onDate       DATE            NOT NULL,      --상영날짜
+    startTime    VARCHAR2(30)    NOT NULL,      --상영시작시간
+    movieNum     VARCHAR2(30)    NOT NULL,      --영화코드
+    therNum      VARCHAR2(30)    NOT NULL,      --상영관번호
+    FOREIGN KEY (movieNum) REFERENCES movie(movieNum),
+    FOREIGN KEY (therNum) REFERENCES theater(therNum)
+);
+
+-- 예매
+CREATE TABLE reservation(
+    resNum      VARCHAR2(30)    PRIMARY KEY,    --예매번호
+    resDate     DATE            NOT NULL,       --예매일자
+    resPay      NUMBER          NOT NULL,       --예매금액
+    person      NUMBER          NOT NULL,       --인원수
+    onNum       VARCHAR2(30)    NOT NULL,       --상영코드
+    FOREIGN KEY (onNum) REFERENCES schedule(onNum)
+);
+
+
+-- 상영관
+INSERT INTO theater(therNum, totSeat) VALUES ('1',10);
+INSERT INTO theater(therNum, totSeat) VALUES ('2',20);
+INSERT INTO theater(therNum, totSeat) VALUES ('3',30);
+INSERT INTO theater(therNum, totSeat) VALUES ('4',40);
+INSERT INTO theater(therNum, totSeat) VALUES ('5',50);
+
+
+-- 조회
+SELECT * from movie ORDER BY movieNum;
+SELECT * from theater;
+SELECT * from reservation ;
+SELECT * from schedule ORDER BY movieNum;
+
+
+
+-- 삭제
+DROP TABLE theater CASCADE CONSTRAINTS PURGE;
+DROP TABLE movie CASCADE CONSTRAINTS PURGE;
+DROP TABLE schedule CASCADE CONSTRAINTS PURGE;
+DROP TABLE reservation CASCADE CONSTRAINTS PURGE ;
+     
+                    
+-- 시퀀스
+CREATE SEQUENCE movieNum_seq
+INCREMENT BY 1
+START WITH 1
+NOCYCLE
+NOCACHE;
+
+CREATE SEQUENCE onNum_seq
+INCREMENT BY 1
+START WITH 1000
+NOCYCLE
+NOCACHE;
+
+CREATE SEQUENCE resNum_seq
+INCREMENT BY 1
+START WITH 100000
+NOCYCLE
+NOCACHE;
+
+
+-- 시퀀스 삭제
+DROP SEQUENCE movieNum_seq;
+DROP SEQUENCE onNum_seq;
+DROP SEQUENCE resNum_seq;
